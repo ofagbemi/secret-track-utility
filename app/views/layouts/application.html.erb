@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script type="text/javascript" src="./bti/audio.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  
+  <style>
+    html {
+      font-family: Helvetica Neue, sans-serif;
+      font-weight: 200;
+    }
+    
+    h1, h2 {
+      color: #444;
+    }
+    
+    h2 {
+      margin: 0;
+    }
+    
+    #app {
+      display: inline-block;
+    }
+    
+    #url h1 {
+      color: #888;
+    }
+    input[type="text"] {
+      width: 400px;
+      padding: 8px;
+      font-size: 20px;
+    }
+    .plus {
+      line-height: 36px;
+      font-size: 28px;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .button {
+      background-color: #efefef;
+      color: black;
+      padding: 18px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      font-size: 16px;
+      text-decoration: none;
+      font-weight: 400;
+      
+      /* transition: background-color 0.4s, color 0.4s; */
+    }
+    .button:hover {
+      background-color: #52c4fa;
+      color: white;
+    }
+    label {
+      display: block;
+    }
+    .result {
+      color: black;
+      font-family: Helvetica Neue, sans-serif;
+      padding: 4px;
+    }
+    
+    .result:not(.success):hover {
+      background-color: #ddd;
+    }
+    
+    .success {
+      background-color: rgb(160, 199, 160);
+    }
+    
+    #results {
+      margin-top: 28px;
+      margin-bottom: 28px;
+      padding: 11px;
+      background-color: #eee;
+      display: none;
+      border-radius: 7px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div style="display:inline-block;">
+      <h1>Will try:</h1>
+      <h1 id="url"></h1>
+    </div>
+    <form>
+      <div style="display:inline-block;">
+        <div>Audio ID</div>
+        <input id="audio-id" type="text">
+      </div>
+      
+      <span class="plus">+</span>
+      
+      <div style="display:inline-block;">
+        <div>Custom track number</div>
+        <input id="track-num" style="width: 80px;" type="text">
+      </div>
+      
+      <a class="button submit" href="javascript:void(0);">Try audio id</a>
+    </form>
+    
+    <div id="results">
+      <h2> Results</h2>
+    </div>
+  </div>
+  
+  
+  
+  <script>
+    function setSize() {
+      var app = $('#app');
+      var left = ((window.innerWidth - app.width())/2) + 'px';
+      var top = ((window.innerHeight - app.height()) * 0.2) + 'px';
+      app.css({
+        position: 'absolute',
+        left: left,
+        top: top,
+      });
+    }
+    
+    $(document).ready(setSize);
+    $(window).resize(setSize);
+    
+    $('input').keyup(function(e) {
+      var id = $('#audio-id').val();
+      var customTrackNumber = $('#track-num').val();
+      
+      var endings = [95, 095, 12];
+      
+      if(customTrackNumber.length > 0) {
+        endings = [customTrackNumber];
+      }
+      
+      $('#url').html('');
+      for(var i = 0; i < endings.length; i++) {
+        var src = 'uggc://fgngvp.orpnhfrgurvagre.arg/fpevcg/' ['le3']() + (id+endings[i])['a3q']() + '.zc3' ['q4x']();
+        $('#url').append($('<div>' + src + '</div>'));
+      }
+    });
+    
+    $('.submit.button').click(function(e) {
+      $('form').submit();
+    });
+    
+    $('form').submit(function(e) {
+      e.preventDefault();
+      var id = $('#audio-id').val();
+      var customTrackNumber = $('#track-num').val();
+      
+      var endings = [95, 095, 12];
+      
+      if(customTrackNumber.length > 0) {
+        endings = [customTrackNumber];
+      }
+      
+      ids = [];
+      for(var i = 0; i < endings.length; i++) {
+        var perms = generatePermutations(id + endings[i]);
+        ids = ids.concat(perms);
+      }
+      
+      sendRequests(ids);
+    });
+    
+    function generatePermutations(id) {
+      var start = id.toLowerCase();
+      var p = [];
+      generatePermutationsHelper(p, '', start);
+      return p;
+    }
+    
+    function generatePermutationsHelper(permutations, start, left) {
+      if(left.length == 0) {
+        permutations.push(start);
+        return;
+      }
+      
+      var appendStr = '' + left[0];
+      
+      var index = 1;
+      var re = /[0-9]+/g;
+      while(re.exec(appendStr)) {
+        if(index < left.length) {
+          appendStr += left[index];
+        }
+        index++;
+      }
+      
+      generatePermutationsHelper(
+        permutations,
+        start + appendStr.toLowerCase(),
+        left.substring(appendStr.length)
+      );
+      
+      generatePermutationsHelper(
+        permutations,
+        start + appendStr.toUpperCase(),
+        left.substring(appendStr.length)
+      );
+    }
+    
+    function sendRequest(id) {
+      var src = 'uggc://fgngvp.orpnhfrgurvagre.arg/fpevcg/' ['le3']() + id['a3q']() + '.zc3' ['q4x']();
+      var altSrc = 'uggc://fgngvp.orpnhfrgurvagre.arg/fpevcg/' ['le3']() + id['a3q']() + '.btt' ['q4x']();
+      
+      var results = $('#results');
+      var resultHtml = '<a target="_blank" href="{{url}}"><div class="result"><span>{{id}}</span></div></a>';
+      $.ajax({
+        url: src,
+        complete: function(e) {
+          var result = $(resultHtml.replace(/{{url}}/g, src).replace(/{{id}}/, id));
+          console.log(src);
+          if(e.status == 200) {
+            result.find('div').addClass('success')
+            results.append(result);
+          } else {
+            results.append(result);
+          }
+          if(!results.is(':visible')) {
+            results.fadeIn();
+          }
+        }
+      });
+    }
+    
+    function sendRequests(ids) {
+      for(var i = 0; i < ids.length; i++) {
+        sendRequest(ids[i]);
+      }
+    }
+  </script>
+</body>
+</html>
