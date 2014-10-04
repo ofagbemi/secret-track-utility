@@ -19,6 +19,10 @@
       margin: 0;
     }
     
+    input[disabled] {
+      background-color: #fcfcfc;
+    }
+    
     #app {
       display: inline-block;
     }
@@ -98,7 +102,10 @@
       <span class="plus">+</span>
       
       <div style="display:inline-block;">
-        <div>Custom track number</div>
+        <div>
+          <input id="checkbox" type="checkbox" checked>
+          Track number (will use 95, 095, and 12 by default)
+        </div>
         <input id="track-num" style="width: 80px;" type="text">
       </div>
       
@@ -127,7 +134,7 @@
     $(document).ready(setSize);
     $(window).resize(setSize);
     
-    $('input').keyup(function(e) {
+    function showChecks() {
       var id = $('#audio-id').val();
       var customTrackNumber = $('#track-num').val();
       
@@ -137,10 +144,26 @@
         endings = [customTrackNumber];
       }
       
+      if($('#checkbox:checked').length < 1) {
+        endings = [''];
+      }
+      
       $('#url').html('');
       for(var i = 0; i < endings.length; i++) {
         var src = 'uggc://fgngvp.orpnhfrgurvagre.arg/fpevcg/' ['le3']() + (id+endings[i])['a3q']() + '.zc3' ['q4x']();
         $('#url').append($('<div>' + src + '</div>'));
+      }
+    }
+    
+    $('input[type="text"]').keyup(showChecks);
+    $('input[type="checkbox"]').change(showChecks);
+    
+    $('input[type="checkbox"]').change(function() {
+      var input = $('#track-num');
+      if($(this).is(':checked')) {
+        input.prop('disabled', false);
+      } else {
+        input.prop('disabled', true);
       }
     });
     
@@ -157,6 +180,10 @@
       
       if(customTrackNumber.length > 0) {
         endings = [customTrackNumber];
+      }
+      
+      if(!$('#checkbox:checked').length < 1) {
+        endings = [''];
       }
       
       ids = [];
