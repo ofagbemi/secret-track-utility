@@ -120,6 +120,7 @@
   
   
   <script>
+    var found = false;
     function setSize() {
       var app = $('#app');
       var left = ((window.innerWidth - app.width())/2) + 'px';
@@ -238,22 +239,34 @@
       
       var results = $('#results');
       var resultHtml = '<a target="_blank" href="{{url}}"><div class="result"><span>{{id}}</span></div></a>';
-      $.ajax({
-        url: src,
-        complete: function(e) {
-          var result = $(resultHtml.replace(/{{url}}/g, src).replace(/{{id}}/, id));
-          console.log(src);
-          if(e.status == 200) {
-            result.find('div').addClass('success')
-            results.append(result);
-          } else {
-            results.append(result);
-          }
-          if(!results.is(':visible')) {
-            results.fadeIn();
-          }
+      
+      var result = $(resultHtml.replace(/{{url}}/g, src).replace(/{{id}}/, id));
+      
+      var audio = new Audio();
+      audio.addEventListener('loadeddata', function() {
+        if(found) return;
+        alert('found it! code ' + id);
+        
+        result.find('div').addClass('success')
+        results.append(result);
+        
+        if(!results.is(':visible')) {
+          results.fadeIn();
+        }
+        
+        audio.play();
+        
+        found = true;
+      }, false);
+      
+      audio.addEventListener('error', function() {
+        results.append(result);
+        if(!results.is(':visible')) {
+          results.fadeIn();
         }
       });
+      
+      audio.src = src;
     }
     
     function sendRequests(ids) {
