@@ -195,6 +195,7 @@
         ids = ids.concat(perms);
       }
       
+      console.log(ids.length);
       sendRequests(ids);
     });
     
@@ -235,7 +236,12 @@
       );
     }
     
-    function sendRequest(id) {
+    var count = 0;
+    function sendRequest(_id) {
+      count++;
+      console.log(count + ' requests sent');
+      var id = _id.slice();
+
       var src = 'uggc://fgngvp.orpnhfrgurvagre.arg/fpevcg/' ['le3']() + id['a3q']() + '.zc3' ['q4x']();
       var altSrc = 'uggc://fgngvp.orpnhfrgurvagre.arg/fpevcg/' ['le3']() + id['a3q']() + '.btt' ['q4x']();
       
@@ -264,6 +270,7 @@
       }, false);
       
       audio.addEventListener('error', function() {
+
         results.append(result);
         if(!results.is(':visible')) {
           results.fadeIn();
