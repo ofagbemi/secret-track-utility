@@ -90,7 +90,7 @@
 <body>
   <div id="app">
     <div style="display:inline-block;">
-      <h1>Will try:</h1>
+      <h1 id="will-try">Will try:</h1>
       <h1 id="url"></h1>
     </div>
     <form>
@@ -177,6 +177,8 @@
       var id = $('#audio-id').val();
       var customTrackNumber = $('#track-num').val();
       
+      $('#results').html('<h2> Results</h2>');
+      
       var endings = [95, 095, 12];
       
       if(customTrackNumber.length > 0) {
@@ -245,7 +247,9 @@
       var audio = new Audio();
       audio.addEventListener('loadeddata', function() {
         if(found) return;
-        alert('found it! code ' + id);
+        $('body')
+          .addClass('success');
+        $('#will-try').html('Found it! code ' + id);
         
         result.find('div').addClass('success')
         results.append(result);
